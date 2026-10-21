@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NUNSA Welfare</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230B5C7A' d='M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root {
+  --bg: #F3F6F7;
+  --surface: #FFFFFF;
+  --ink: #12232B;
+  --muted: #52666F;
+  --line: #D8E1E5;
+  --accent: #0B5C7A;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E1F0F5;
+  --warm: #C2410C;
+  --warm-soft: #FDEBE3;
+  --good: #1B7F4B;
+  --good-soft: #E3F4EA;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --tab-h: 64px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E181D; --surface: #16252C; --ink: #E7F0F3; --muted: #9DB2BB; --line: #26383F;
+    --accent: #4FB4D6; --accent-ink: #06222C; --accent-soft: #17323C;
+    --warm: #FF8A5B; --warm-soft: #33211B; --good: #56C38A; --good-soft: #17301F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E181D; --surface: #16252C; --ink: #E7F0F3; --muted: #9DB2BB; --line: #26383F;
+  --accent: #4FB4D6; --accent-ink: #06222C; --accent-soft: #17323C;
+  --warm: #FF8A5B; --warm-soft: #33211B; --good: #56C38A; --good-soft: #17301F;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+.app { max-width: 520px; margin: 0 auto; padding-top: max(20px, env(safe-area-inset-top, 0px)); padding-bottom: calc(var(--tab-h) + 28px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 20px; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.brand b { font-family: var(--font-display); font-size: 1.25rem; letter-spacing: -0.01em; }
+.brand span { color: var(--muted); font-size: 0.8125rem; }
+.theme-btn { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; cursor: pointer; }
+.theme-btn svg { width: 20px; height: 20px; stroke: var(--ink); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.notice { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; font-size: 0.875rem; }
+.notice.warn { background: var(--warm-soft); }
+.notice b { font-weight: 700; }
+
+.view { display: flex; flex-direction: column; gap: 20px; }
+.lead h1 { font-size: 1.75rem; }
+.lead p { color: var(--muted); margin-top: 6px; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.card h2 { font-size: 1.125rem; }
+.card .sub { color: var(--muted); font-size: 0.9375rem; }
+.label { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+
+.moods { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.mood { min-height: 64px; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px 2px; font-size: 0.75rem; font-weight: 500; }
+.mood svg { width: 26px; height: 26px; stroke: var(--ink); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.mood[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.mood[aria-pressed="true"] svg { stroke: var(--accent-ink); }
+.mood-reply { background: var(--accent-soft); border-radius: 10px; padding: 12px; font-size: 0.9375rem; }
+.mood-reply a { color: var(--accent); font-weight: 700; }
+
+.btn { min-height: 48px; border-radius: 12px; border: 1px solid transparent; padding: 0 18px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn-warm { background: var(--warm); color: #fff; }
+:root[data-theme="dark"] .btn-warm { color: #2A0F04; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn-warm { color: #2A0F04; } }
+.btn-sm { min-height: 40px; padding: 0 14px; font-size: 0.875rem; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-row .btn { flex: 1 1 140px; }
+
+.quick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.quick a { text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.quick a b { font-family: var(--font-display); font-size: 1.0625rem; }
+.quick a span { color: var(--muted); font-size: 0.875rem; }
+
+.event { display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+.event:first-child { border-top: 0; padding-top: 0; }
+.event h3 { font-size: 1.0625rem; }
+.event .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 0.75rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); white-space: nowrap; }
+.chip.muted { background: var(--bg); border: 1px solid var(--line); color: var(--muted); }
+.chip.good { background: var(--good-soft); }
+.chip.warm { background: var(--warm-soft); }
+.event p { color: var(--muted); font-size: 0.9375rem; }
+.event .btn { align-self: flex-start; }
+.btn[aria-pressed="true"] { background: var(--good-soft); border-color: var(--good); color: var(--ink); }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label, .field .label { font-weight: 700; font-size: 0.9375rem; }
+.field .label { text-transform: none; letter-spacing: 0; color: var(--ink); }
+.field input[type="text"], .field input[type="tel"], .field input[type="email"], .field input[type="password"], .field select, .field textarea {
+  width: 100%; min-height: 48px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg);
+}
+.field textarea { min-height: 128px; resize: vertical; }
+.field .hint { font-size: 0.8125rem; color: var(--muted); }
+.field .err { font-size: 0.875rem; color: var(--warm); font-weight: 700; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { min-height: 48px; border: 1px solid var(--line); border-radius: 10px; display: grid; place-items: center; cursor: pointer; font-weight: 500; background: var(--bg); }
+.seg input:checked + label { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.seg input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: 2px; }
+.switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.switch-row > span:first-child { display: flex; flex-direction: column; }
+.switch-row small { color: var(--muted); font-size: 0.8125rem; }
+.switch { position: relative; flex: none; width: 52px; height: 32px; }
+.switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; width: 100%; height: 100%; }
+.switch i { position: absolute; inset: 0; border-radius: 999px; background: var(--line); transition: background .15s; pointer-events: none; }
+.switch i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .15s; }
+.switch input:checked + i { background: var(--accent); }
+.switch input:checked + i::after { transform: translateX(20px); }
+.switch input:focus-visible + i { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .switch i, .switch i::after { transition: none; } }
+.contact-box { display: flex; flex-direction: column; gap: 12px; }
+
+.done { background: var(--good-soft); border: 1px solid var(--good); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.done h2 { font-size: 1.125rem; }
+.ref { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.04em; user-select: all; }
+
+.reports { display: flex; flex-direction: column; gap: 12px; }
+.rep { border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.rep:first-child { border-top: 0; padding-top: 0; }
+.rep-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; }
+.rep-head b { font-family: var(--font-display); letter-spacing: 0.03em; }
+.rep p { color: var(--muted); font-size: 0.9375rem; overflow-wrap: anywhere; white-space: pre-wrap; }
+.empty { color: var(--muted); font-size: 0.9375rem; }
+
+.sos { background: var(--warm-soft); border: 1px solid var(--warm); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.sos h2 { font-size: 1.125rem; }
+.number { font-family: var(--font-display); font-size: 2rem; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; user-select: all; }
+.contact { display: flex; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); align-items: baseline; }
+.contact:first-child { border-top: 0; padding-top: 0; }
+.contact div { min-width: 0; }
+.contact b { display: block; }
+.contact small { color: var(--muted); }
+.contact .tba { color: var(--muted); font-size: 0.875rem; text-align: right; flex: none; }
+.tips { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.tips li::marker { color: var(--accent); }
+
+/* Admin */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 0.8125rem; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.filter { min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-weight: 500; font-size: 0.875rem; }
+.filter[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.a-rep { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.a-rep.urgent { border-color: var(--warm); }
+.a-rep .who { font-size: 0.875rem; color: var(--muted); overflow-wrap: anywhere; }
+.a-rep .body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.a-actions { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.a-actions select { min-height: 44px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); }
+.link-btn { background: none; border: 0; padding: 8px 0; color: var(--warm); font-weight: 700; cursor: pointer; font-size: 0.875rem; }
+.office-link { align-self: center; color: var(--muted); font-size: 0.8125rem; text-decoration: underline; padding: 8px; }
+
+.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: max(8px, env(safe-area-inset-left, 0px));
+  padding-right: max(8px, env(safe-area-inset-right, 0px));
+}
+.tabs nav { max-width: 520px; margin: 0 auto; height: var(--tab-h); display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.tab { border: 0; background: none; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 0.75rem; font-weight: 500; color: var(--muted); cursor: pointer; text-decoration: none; }
+.tab svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tab[aria-current="page"] { color: var(--accent); font-weight: 700; }
+
+.toast { position: fixed; left: 50%; bottom: calc(var(--tab-h) + 16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: 0.875rem; font-weight: 700; z-index: 20; max-width: calc(100vw - 32px); text-align: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <b>NUNSA Welfare</b>
+      <span>Office of the Welfare Director</span>
+    </div>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
+
+  <!-- HOME -->
+  <section class="view" id="view-home" aria-label="Home">
+    <div class="lead">
+      <h1 id="greeting">Welcome</h1>
+      <p>Support, reporting and campus welfare events in one place.</p>
+    </div>
+
+    <div class="card">
+      <span class="label">Daily check-in</span>
+      <h2>How are you holding up today?</h2>
+      <div class="moods" id="moods" role="group" aria-label="Choose how you feel"></div>
+      <div class="mood-reply" id="moodReply" hidden></div>
+      <p class="sub" style="font-size:0.8125rem">Check-ins stay on your phone. The Welfare office does not see them.</p>
+    </div>
+
+    <div class="quick">
+      <a href="#report"><b>Report an issue</b><span>Goes to the Welfare office. Anonymous if you choose.</span></a>
+      <a href="#support"><b>Get support</b><span>Emergency numbers and campus contacts.</span></a>
+    </div>
+
+    <div class="card">
+      <span class="label">Coming up this session</span>
+      <div id="homeEvents"></div>
+      <a class="btn btn-ghost" href="#events">See all events</a>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="view" id="view-report" aria-label="Report an issue" hidden>
+    <div class="lead">
+      <h1>Report an issue</h1>
+      <p>Tell the Welfare Director's office what is wrong. You decide whether your name is attached.</p>
+    </div>
+
+    <div class="notice warn" id="setupNote" hidden><b>Not connected yet.</b> Reports cannot be sent until the Welfare office finishes setting up the app.</div>
+    <div class="notice" id="connNote" hidden></div>
+
+    <div class="done" id="done" hidden>
+      <h2>Report sent to the Welfare office</h2>
+      <p>Keep this reference code. You can follow the status of your report under "Your reports" below.</p>
+      <div class="ref" id="doneRef"></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-sm" type="button" id="copyRef">Copy code</button>
+        <button class="btn btn-primary btn-sm" type="button" id="another">Write another</button>
+      </div>
+    </div>
+
+    <form class="card" id="form" novalidate>
+      <div class="field">
+        <label for="cat">What is it about?</label>
+        <select id="cat">
+          <option value="Hostel and accommodation">Hostel and accommodation</option>
+          <option value="Lecturer or course issue">Lecturer or course issue</option>
+          <option value="Health and wellbeing">Health and wellbeing</option>
+          <option value="Harassment or safety">Harassment or safety</option>
+          <option value="Fees and finance">Fees and finance</option>
+          <option value="Something else">Something else</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <span class="label" id="urgLabel">How urgent is it?</span>
+        <div class="seg" role="radiogroup" aria-labelledby="urgLabel">
+          <input type="radio" name="urg" id="urg1" value="Routine" checked><label for="urg1">Routine</label>
+          <input type="radio" name="urg" id="urg2" value="Urgent"><label for="urg2">Urgent</label>
+        </div>
+        <p class="hint">If someone is in danger right now, use the Support tab first.</p>
+      </div>
+
+      <div class="field">
+        <label for="desc">What happened?</label>
+        <textarea id="desc" maxlength="3000" placeholder="Write what happened, where, and when. Add only what you are comfortable sharing."></textarea>
+        <p class="err" id="descErr" hidden>Please write at least a short description (10 characters or more).</p>
+      </div>
+
+      <div class="field">
+        <div class="switch-row">
+          <span><b>Stay anonymous</b><small>When on, your name, number and matric number are not sent.</small></span>
+          <span class="switch"><input type="checkbox" id="anon" checked aria-label="Stay anonymous"><i></i></span>
+        </div>
+      </div>
+
+      <div class="contact-box" id="contactBox" hidden>
+        <div class="field">
+          <label for="cname">Your name</label>
+          <input type="text" id="cname" autocomplete="name" maxlength="120">
+        </div>
+        <div class="field">
+          <label for="cphone">Phone or WhatsApp number</label>
+          <input type="tel" id="cphone" autocomplete="tel" maxlength="40">
+        </div>
+        <div class="field">
+          <label for="cmatric">Matric number (optional)</label>
+          <input type="text" id="cmatric" autocomplete="off" maxlength="40">
+        </div>
+      </div>
+
+      <p class="err" id="sendErr" hidden></p>
+      <button class="btn btn-primary" type="submit" id="submitBtn">Send report</button>
+    </form>
+
+    <div class="card">
+      <span class="label">Your reports</span>
+      <div class="reports" id="reports"></div>
+      <p class="sub" style="font-size:0.8125rem">These are linked to this phone's browser. Keep your reference codes in case you switch phones or clear browser data.</p>
+    </div>
+  </section>
+
+  <!-- SUPPORT -->
+  <section class="view" id="view-support" aria-label="Support" hidden>
+    <div class="lead">
+      <h1>Support</h1>
+      <p>Help is available. Start with the option that fits right now.</p>
+    </div>
+
+    <div class="sos">
+      <span class="label" style="color:var(--warm)">In an emergency</span>
+      <h2>Call the national emergency line</h2>
+      <div class="number" id="num112">112</div>
+      <p class="sub">Use this if someone is in danger, badly hurt or at risk of harming themselves. If you can, ask a friend or hall neighbour to stay with you.</p>
+      <div class="btn-row">
+        <button class="btn btn-warm" type="button" id="copy112">Copy number</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="label">Campus contacts</span>
+      <h2>People to reach</h2>
+      <div>
+        <div class="contact"><div><b>Welfare Director's office</b><small>Reports and welfare concerns</small></div><span class="tba">Details to be added</span></div>
+        <div class="contact"><div><b>Campus counselling unit</b><small>Stress, grief, anxiety, relationships</small></div><span class="tba">Details to be added</span></div>
+        <div class="contact"><div><b>Student health centre</b><small>Illness, injury, medical care</small></div><span class="tba">Details to be added</span></div>
+        <div class="contact"><div><b>Campus security</b><small>Theft, threats, unsafe areas</small></div><span class="tba">Details to be added</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="label">Quick guides</span>
+      <h2>When exams and money get heavy</h2>
+      <ul class="tips">
+        <li>Tell one person you trust how you are doing. Saying it out loud lowers the weight.</li>
+        <li>Break the week into small tasks. One finished task counts as progress.</li>
+        <li>Sleep and a proper meal come before another late-night study session.</li>
+        <li>If your fees or feeding are the problem, report it. The office can often point you to help.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Stay safe online</h2>
+      <ul class="tips">
+        <li>No real scholarship, internship or loan asks you to pay a fee to receive it.</li>
+        <li>Never share an OTP, PIN or password, even with someone who says they are from your bank.</li>
+        <li>Check a link before you tap it. Fake portals copy real school pages.</li>
+        <li>Turn on screen lock and a tracking feature on your phone.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="view" id="view-events" aria-label="Events" hidden>
+    <div class="lead">
+      <h1>Events</h1>
+      <p>Welfare programmes planned for this academic session. Dates will be announced.</p>
+    </div>
+    <div class="card" id="eventList"></div>
+  </section>
+
+  <!-- ADMIN -->
+  <section class="view" id="view-admin" aria-label="Welfare office" hidden>
+    <div class="lead">
+      <h1>Welfare office</h1>
+      <p>Sign in to read and manage reports.</p>
+    </div>
+
+    <div class="notice warn" id="adminSetup" hidden><b>Not connected yet.</b> Finish the Firebase setup first, then this page will work.</div>
+
+    <form class="card" id="loginForm" hidden novalidate>
+      <div class="field">
+        <label for="aemail">Email</label>
+        <input type="email" id="aemail" autocomplete="username" autocapitalize="none">
+      </div>
+      <div class="field">
+        <label for="apass">Password</label>
+        <input type="password" id="apass" autocomplete="current-password">
+      </div>
+      <p class="err" id="loginErr" hidden></p>
+      <button class="btn btn-primary" type="submit" id="loginBtn">Sign in</button>
+    </form>
+
+    <div class="card" id="noAccess" hidden>
+      <h2>No admin access</h2>
+      <p class="sub">This account is signed in but is not the Welfare office account, so reports stay hidden.</p>
+      <button class="btn btn-ghost" type="button" data-signout>Sign out</button>
+    </div>
+
+    <div class="card" id="adminLoading" hidden><p class="sub">Loading reports...</p></div>
+
+    <div class="view" id="adminDash" hidden>
+      <div class="stats" id="stats"></div>
+      <div class="filters" id="filters" role="group" aria-label="Filter reports"></div>
+      <div class="reports" id="adminList"></div>
+      <button class="btn btn-ghost" type="button" data-signout>Sign out</button>
+    </div>
+  </section>
+
+  <a class="office-link" href="#admin">Welfare office login</a>
+</div>
+
+<div class="tabs">
+  <nav aria-label="Main">
+    <a class="tab" href="#home" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/></svg>Home</a>
+    <a class="tab" href="#report" data-tab="report"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8.5 9h7M8.5 13h7M8.5 17h4"/></svg>Report</a>
+    <a class="tab" href="#support" data-tab="support"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Support</a>
+    <a class="tab" href="#events" data-tab="events"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4z"/><path d="M4 10h16M8 3v5M16 3v5"/></svg>Events</a>
+  </nav>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script type="module">
+/* ------------------------------------------------------------------
+   SETUP: paste your Firebase web app values between the quotes below.
+   The setup guide shows where to find them.
+------------------------------------------------------------------- */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCO-6O2WKdtViPCsTxuvgFKw84QbF8UO0U",
+  authDomain: "nunsa-welfarism.firebaseapp.com",
+  projectId: "nunsa-welfarism",
+  appId: "1:3805786353:web:132ba6a6b23f64f5ec3950"
+};
+const SDK_VERSION = "10.12.2";
+
+const CONFIGURED = Object.keys(FIREBASE_CONFIG).every(function (k) {
+  var v = String(FIREBASE_CONFIG[k] || "");
+  return v && v.indexOf("PASTE_") !== 0;
+});
+
+const VIEWS = ["home", "report", "support", "events", "admin"];
+const STATUSES = ["New", "In progress", "Resolved"];
+
+const EVENTS = [
+  { id: "run", name: "NUNSA Run", partner: "With the Sports Director", when: "Date to be announced",
+    text: "A relaxed mini-marathon open to every student. Run or walk from one point to another, talk along the way and meet people from other departments." },
+  { id: "fair", name: "NUNSA Trade Fair", partner: "With the Treasurer's office", when: "3 days, dates to be announced",
+    text: "Students and non-students sell food, fashion, crafts and services. A chance to earn, shop and network on campus." },
+  { id: "tech", name: "NUNSA Tech and Wellbeing Clinic", partner: "With the Office of the Vice President", when: "Date to be announced",
+    text: "Hands-on help with online safety, scams, phone security and healthy screen habits, plus a look at this welfare app." }
+];
+
+const MOODS = [
+  { v: 1, t: "Struggling", icon: '<path d="M8 9.5h.01M16 9.5h.01"/><circle cx="12" cy="12" r="9"/><path d="M8.5 16c1-1.2 2.2-1.8 3.5-1.8s2.5.6 3.5 1.8"/>',
+    reply: 'I am sorry it is this heavy. You do not have to carry it alone. <a href="#support">Open Support</a> to see who you can reach today.' },
+  { v: 2, t: "Low", icon: '<path d="M8 9.5h.01M16 9.5h.01"/><circle cx="12" cy="12" r="9"/><path d="M9 15.5c.9-.6 1.9-.9 3-.9s2.1.3 3 .9"/>',
+    reply: 'Low days happen, especially in a busy session. Rest a little, eat well and talk to someone you trust. <a href="#support">Support is here</a> if it keeps going.' },
+  { v: 3, t: "Okay", icon: '<path d="M8 9.5h.01M16 9.5h.01"/><circle cx="12" cy="12" r="9"/><path d="M8.5 15h7"/>',
+    reply: 'Okay is a fair place to be. Check in on a friend today, you might be the one who helps them.' },
+  { v: 4, t: "Good", icon: '<path d="M8 9.5h.01M16 9.5h.01"/><circle cx="12" cy="12" r="9"/><path d="M8.5 14c.9 1.3 2 2 3.5 2s2.6-.7 3.5-2"/>',
+    reply: 'Good to hear. Keep the routines that are working for you.' },
+  { v: 5, t: "Great", icon: '<circle cx="12" cy="12" r="9"/><path d="M8 9.5h.01M16 9.5h.01"/><path d="M7.5 13.5h9c-.5 2.5-2.2 4-4.5 4s-4-1.5-4.5-4z"/>',
+    reply: 'Love that. Share some of that energy with a coursemate who needs it.' }
+];
+
+/* ---------- helpers ---------- */
+const $ = function (id) { return document.getElementById(id); };
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+function load(key, fallback) {
+  try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch (e) { return fallback; }
+}
+function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+
+var toastTimer;
+function toast(msg) {
+  var t = $("toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 2400);
+}
+function copy(text) {
+  var ok = function () { toast("Copied"); };
+  var no = function () { toast("Press and hold the text to copy it"); };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, no);
+    else no();
+  } catch (e) { no(); }
+}
+function fmtDate(ts) {
+  try {
+    var d = ts && ts.toDate ? ts.toDate() : null;
+    if (!d) return "Just now";
+    return d.toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  } catch (e) { return ""; }
+}
+function makeRef() {
+  var alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789", out = "NW-";
+  var buf = new Uint32Array(5);
+  (window.crypto || window.msCrypto).getRandomValues(buf);
+  for (var i = 0; i < 5; i++) out += alphabet[buf[i] % alphabet.length];
+  return out;
+}
+function statusChip(s) {
+  var cls = s === "Resolved" ? "chip good" : s === "In progress" ? "chip" : "chip muted";
+  return '<span class="' + cls + '">' + esc(s || "New") + '</span>';
+}
+
+/* ---------- greeting, theme ---------- */
+var hr = new Date().getHours();
+$("greeting").textContent = hr < 12 ? "Good morning" : hr < 17 ? "Good afternoon" : "Good evening";
+$("themeBtn").addEventListener("click", function () {
+  var root = document.documentElement, cur = root.getAttribute("data-theme");
+  var isDark = cur ? cur === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", isDark ? "light" : "dark");
+});
+
+/* ---------- views ---------- */
+function show(name) {
+  if (VIEWS.indexOf(name) < 0) name = "home";
+  VIEWS.forEach(function (v) { $("view-" + v).hidden = v !== name; });
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (a) {
+    if (a.getAttribute("data-tab") === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  window.scrollTo(0, 0);
+}
+function route() { show((location.hash || "#home").replace("#", "")); }
+window.addEventListener("hashchange", route);
+
+/* ---------- check-in (stays on the phone) ---------- */
+var mood = load("nw_mood", null);
+var moodsEl = $("moods");
+MOODS.forEach(function (m) {
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "mood"; b.setAttribute("data-v", m.v); b.setAttribute("aria-pressed", "false");
+  b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + m.icon + '</svg>' + m.t;
+  b.addEventListener("click", function () { setMood(m.v, true); });
+  moodsEl.appendChild(b);
+});
+function setMood(v, persist) {
+  var m = MOODS.filter(function (x) { return x.v === v; })[0];
+  Array.prototype.forEach.call(moodsEl.children, function (b) {
+    b.setAttribute("aria-pressed", String(Number(b.getAttribute("data-v")) === v));
+  });
+  var r = $("moodReply"); r.innerHTML = m.reply; r.hidden = false;
+  if (persist) { mood = { v: v, day: new Date().toDateString() }; save("nw_mood", mood); }
+}
+if (mood && mood.day === new Date().toDateString()) setMood(mood.v, false);
+
+/* ---------- events ---------- */
+var interested = load("nw_interested", {});
+function renderEvents() {
+  $("eventList").innerHTML = EVENTS.map(function (e) {
+    var on = !!interested[e.id];
+    return '<div class="event"><h3>' + esc(e.name) + '</h3><div class="meta"><span class="chip">' + esc(e.partner) + '</span><span class="chip muted">' + esc(e.when) + '</span></div><p>' + esc(e.text) + '</p>' +
+      '<button class="btn btn-ghost btn-sm" type="button" data-int="' + e.id + '" aria-pressed="' + on + '">' + (on ? "You are interested" : "I am interested") + '</button></div>';
+  }).join("");
+  $("homeEvents").innerHTML = EVENTS.map(function (e) {
+    return '<div class="event"><h3>' + esc(e.name) + '</h3><div class="meta"><span class="chip">' + esc(e.partner) + '</span><span class="chip muted">' + esc(e.when) + '</span></div></div>';
+  }).join("");
+}
+$("eventList").addEventListener("click", function (ev) {
+  var b = ev.target.closest("[data-int]"); if (!b) return;
+  var id = b.getAttribute("data-int");
+  interested[id] = !interested[id];
+  save("nw_interested", interested);
+  renderEvents();
+});
+renderEvents();
+$("copy112").addEventListener("click", function () { copy("112"); });
+
+/* ---------- cloud state ---------- */
+var fb = null;            // firebase functions once loaded
+var user = null;          // current firebase user (anonymous student or admin)
+var stopMine = null, stopAll = null;
+var myReports = [], allReports = [];
+var adminState = "idle";  // idle | loading | ok | denied
+var filter = "All";
+var pendingRef = null;
+
+function setConn(kind, detail) {
+  var note = $("connNote"), setup = $("setupNote");
+  setup.hidden = CONFIGURED;
+  if (!CONFIGURED) { note.hidden = true; }
+  else if (kind === "error") {
+    note.hidden = false; note.className = "notice warn";
+    note.innerHTML = '<b>Could not connect.</b> Check your data connection and reload. ' + (detail ? '(' + esc(detail) + ')' : "");
+  } else if (kind === "connecting") {
+    note.hidden = false; note.className = "notice"; note.textContent = "Connecting...";
+  } else { note.hidden = true; }
+  $("submitBtn").disabled = !(CONFIGURED && fb && user);
+}
+
+async function initCloud() {
+  setConn(CONFIGURED ? "connecting" : "off");
+  renderAdmin();
+  if (!CONFIGURED) return;
+  try {
+    var base = "https://www.gstatic.com/firebasejs/" + SDK_VERSION + "/";
+    var mods = await Promise.all([
+      import(base + "firebase-app.js"),
+      import(base + "firebase-auth.js"),
+      import(base + "firebase-firestore.js")
+    ]);
+    var app = mods[0].initializeApp(FIREBASE_CONFIG);
+    fb = Object.assign({}, mods[1], mods[2]);
+    fb.auth = mods[1].getAuth(app);
+    fb.db = mods[2].getFirestore(app);
+    fb.onAuthStateChanged(fb.auth, onUser);
+  } catch (e) {
+    setConn("error", e && e.code ? e.code : "load");
+  }
+}
+
+async function onUser(u) {
+  if (stopMine) { stopMine(); stopMine = null; }
+  if (stopAll) { stopAll(); stopAll = null; }
+  user = u; adminState = "idle"; myReports = []; allReports = [];
+  if (!u) {
+    setConn("connecting");
+    try { await fb.signInAnonymously(fb.auth); }
+    catch (e) { setConn("error", e && e.code ? e.code : "auth"); }
+    renderAdmin();
+    return;
+  }
+  setConn("ok");
+  watchMine();
+  if (!u.isAnonymous) watchAll();
+  renderMine();
+  renderAdmin();
+}
+
+function watchMine() {
+  var q = fb.query(fb.collection(fb.db, "reports"), fb.where("authorUid", "==", user.uid));
+  stopMine = fb.onSnapshot(q, function (snap) {
+    myReports = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+    myReports.sort(function (a, b) { return tsMs(b) - tsMs(a); });
+    renderMine();
+  }, function () { renderMine(); });
+}
+function tsMs(r) { try { return r.createdAt && r.createdAt.toMillis ? r.createdAt.toMillis() : Date.now(); } catch (e) { return 0; } }
+
+function watchAll() {
+  adminState = "loading";
+  var q = fb.query(fb.collection(fb.db, "reports"), fb.orderBy("createdAt", "desc"), fb.limit(300));
+  stopAll = fb.onSnapshot(q, function (snap) {
+    allReports = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+    adminState = "ok";
+    renderAdmin();
+  }, function (err) {
+    adminState = err && err.code === "permission-denied" ? "denied" : "error";
+    renderAdmin();
+  });
+}
+
+/* ---------- student: form + my reports ---------- */
+function syncContact() { $("contactBox").hidden = $("anon").checked; }
+$("anon").addEventListener("change", syncContact);
+syncContact();
+$("desc").addEventListener("input", function () { $("descErr").hidden = true; });
+
+function renderMine() {
+  var box = $("reports");
+  if (!CONFIGURED || !myReports.length) {
+    box.innerHTML = '<p class="empty">Reports you send from this phone appear here with their status.</p>';
+    return;
+  }
+  box.innerHTML = myReports.map(function (r) {
+    var d = r.description || "";
+    return '<div class="rep"><div class="rep-head"><b>' + esc(r.ref || r.id) + '</b>' + statusChip(r.status) + '</div>' +
+      '<span class="label">' + esc(r.category) + ' &middot; ' + esc(fmtDate(r.createdAt)) + (r.anonymous ? " &middot; Anonymous" : "") + '</span>' +
+      '<p>' + esc(d.length > 140 ? d.slice(0, 140) + "..." : d) + '</p></div>';
+  }).join("");
+}
+
+function withTimeout(promise, ms) {
+  return new Promise(function (resolve, reject) {
+    var t = setTimeout(function () { reject(new Error("timeout")); }, ms);
+    promise.then(function (v) { clearTimeout(t); resolve(v); }, function (e) { clearTimeout(t); reject(e); });
+  });
+}
+
+$("form").addEventListener("submit", async function (ev) {
+  ev.preventDefault();
+  var err = $("sendErr"); err.hidden = true;
+  var desc = $("desc").value.trim();
+  if (desc.length < 10) { $("descErr").hidden = false; $("desc").focus(); return; }
+  if (!(CONFIGURED && fb && user)) { err.textContent = "Not connected yet. Please wait a moment and try again."; err.hidden = false; return; }
+  var anon = $("anon").checked;
+  pendingRef = pendingRef || makeRef();
+  var data = {
+    ref: pendingRef,
+    category: $("cat").value,
+    urgency: document.querySelector('input[name="urg"]:checked').value,
+    description: desc,
+    anonymous: anon,
+    name: anon ? "" : $("cname").value.trim().slice(0, 120),
+    phone: anon ? "" : $("cphone").value.trim().slice(0, 40),
+    matric: anon ? "" : $("cmatric").value.trim().slice(0, 40),
+    status: "New",
+    authorUid: user.uid,
+    createdAt: fb.serverTimestamp()
+  };
+  var btn = $("submitBtn"); btn.disabled = true; btn.textContent = "Sending...";
+  try {
+    await withTimeout(fb.setDoc(fb.doc(fb.db, "reports", data.ref), data), 20000);
+    $("doneRef").textContent = data.ref;
+    $("done").hidden = false;
+    $("form").hidden = true;
+    pendingRef = null;
+    $("done").scrollIntoView({ block: "start" });
+  } catch (e) {
+    err.textContent = e && e.message === "timeout"
+      ? "This is taking too long. Check your data connection, then tap Send again. It will not send twice."
+      : "Could not send the report. Please try again. " + (e && e.code ? "(" + e.code + ")" : "");
+    err.hidden = false;
+  }
+  btn.textContent = "Send report";
+  btn.disabled = !(CONFIGURED && fb && user);
+});
+$("copyRef").addEventListener("click", function () { copy($("doneRef").textContent); });
+$("another").addEventListener("click", function () {
+  $("form").reset(); syncContact(); pendingRef = null;
+  $("done").hidden = true; $("form").hidden = false; window.scrollTo(0, 0);
+});
+
+/* ---------- admin ---------- */
+function renderAdmin() {
+  var signedInAdmin = !!(user && !user.isAnonymous);
+  $("adminSetup").hidden = CONFIGURED;
+  $("loginForm").hidden = !(CONFIGURED && fb && !signedInAdmin);
+  $("noAccess").hidden = !(signedInAdmin && adminState === "denied");
+  $("adminLoading").hidden = !(signedInAdmin && (adminState === "loading" || adminState === "error"));
+  $("adminLoading").innerHTML = adminState === "error"
+    ? '<p class="sub">Could not load reports. Check your connection and reload.</p>'
+    : '<p class="sub">Loading reports...</p>';
+  $("adminDash").hidden = !(signedInAdmin && adminState === "ok");
+  if (!(signedInAdmin && adminState === "ok")) return;
+
+  var counts = { All: allReports.length, New: 0, "In progress": 0, Resolved: 0, Urgent: 0 };
+  allReports.forEach(function (r) {
+    counts[r.status] = (counts[r.status] || 0) + 1;
+    if (r.urgency === "Urgent" && r.status !== "Resolved") counts.Urgent += 1;
+  });
+  $("stats").innerHTML =
+    '<div class="stat"><b>' + counts.New + '</b><span>New</span></div>' +
+    '<div class="stat"><b>' + counts["In progress"] + '</b><span>In progress</span></div>' +
+    '<div class="stat"><b>' + counts.Resolved + '</b><span>Resolved</span></div>';
+
+  var names = ["All", "New", "In progress", "Resolved", "Urgent"];
+  $("filters").innerHTML = names.map(function (n) {
+    return '<button type="button" class="filter" data-filter="' + esc(n) + '" aria-pressed="' + (filter === n) + '">' + esc(n) + ' (' + (counts[n] || 0) + ')</button>';
+  }).join("");
+
+  var list = allReports.filter(function (r) {
+    if (filter === "All") return true;
+    if (filter === "Urgent") return r.urgency === "Urgent" && r.status !== "Resolved";
+    return r.status === filter;
+  });
+  if (!list.length) {
+    $("adminList").innerHTML = '<p class="empty">No reports here yet.</p>';
+    return;
+  }
+  $("adminList").innerHTML = list.map(function (r) {
+    var who = r.anonymous ? "Anonymous report" :
+      [r.name, r.matric ? "Matric " + r.matric : "", r.phone].filter(Boolean).map(esc).join(" &middot; ") || "Name not given";
+    var opts = STATUSES.map(function (s) {
+      return '<option value="' + esc(s) + '"' + (s === r.status ? " selected" : "") + '>' + esc(s) + '</option>';
+    }).join("");
+    return '<div class="a-rep' + (r.urgency === "Urgent" && r.status !== "Resolved" ? " urgent" : "") + '">' +
+      '<div class="rep-head"><b>' + esc(r.ref || r.id) + '</b><span>' +
+      (r.urgency === "Urgent" ? '<span class="chip warm">Urgent</span> ' : '') + statusChip(r.status) + '</span></div>' +
+      '<span class="label">' + esc(r.category) + ' &middot; ' + esc(fmtDate(r.createdAt)) + '</span>' +
+      '<div class="who">' + who + '</div>' +
+      '<div class="body">' + esc(r.description) + '</div>' +
+      '<div class="a-actions"><select data-status="' + esc(r.id) + '" aria-label="Status for ' + esc(r.ref || r.id) + '">' + opts + '</select>' +
+      '<button type="button" class="link-btn" data-del="' + esc(r.id) + '">Delete</button></div></div>';
+  }).join("");
+}
+
+$("filters").addEventListener("click", function (ev) {
+  var b = ev.target.closest("[data-filter]"); if (!b) return;
+  filter = b.getAttribute("data-filter"); renderAdmin();
+});
+$("adminList").addEventListener("change", function (ev) {
+  var s = ev.target.closest("[data-status]"); if (!s) return;
+  var id = s.getAttribute("data-status");
+  fb.updateDoc(fb.doc(fb.db, "reports", id), { status: s.value })
+    .then(function () { toast("Status updated"); })
+    .catch(function () { toast("Could not update. Try again."); renderAdmin(); });
+});
+var armed = null, armTimer;
+$("adminList").addEventListener("click", function (ev) {
+  var b = ev.target.closest("[data-del]"); if (!b) return;
+  var id = b.getAttribute("data-del");
+  if (armed !== id) {
+    armed = id; b.textContent = "Tap again to delete";
+    clearTimeout(armTimer);
+    armTimer = setTimeout(function () { armed = null; renderAdmin(); }, 4000);
+    return;
+  }
+  armed = null; clearTimeout(armTimer);
+  fb.deleteDoc(fb.doc(fb.db, "reports", id))
+    .then(function () { toast("Report deleted"); })
+    .catch(function () { toast("Could not delete. Try again."); });
+});
+
+$("loginForm").addEventListener("submit", async function (ev) {
+  ev.preventDefault();
+  var err = $("loginErr"); err.hidden = true;
+  var email = $("aemail").value.trim(), pass = $("apass").value;
+  if (!email || !pass) { err.textContent = "Enter your email and password."; err.hidden = false; return; }
+  var btn = $("loginBtn"); btn.disabled = true; btn.textContent = "Signing in...";
+  try {
+    await fb.signInWithEmailAndPassword(fb.auth, email, pass);
+    $("apass").value = "";
+  } catch (e) {
+    var code = e && e.code ? e.code : "";
+    err.textContent = (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found" || code === "auth/invalid-email")
+      ? "Email or password is wrong."
+      : code === "auth/too-many-requests" ? "Too many tries. Wait a few minutes and try again."
+      : "Could not sign in. Check your connection and try again.";
+    err.hidden = false;
+  }
+  btn.disabled = false; btn.textContent = "Sign in";
+});
+Array.prototype.forEach.call(document.querySelectorAll("[data-signout]"), function (b) {
+  b.addEventListener("click", function () { if (fb) fb.signOut(fb.auth); });
+});
+
+route();
+initCloud();
+</script>
+</body>
+</html>
