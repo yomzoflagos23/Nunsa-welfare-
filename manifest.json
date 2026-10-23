@@ -9,4 +9,12 @@
   "background_color": "#ffffff",
   "theme_color": "#006400",
   "orientation": "portrait"
+"icons": [
+  {
+    "src": "./nunsa-logo.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any"
+  }
+]
 }
